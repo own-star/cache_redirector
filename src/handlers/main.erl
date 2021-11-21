@@ -25,7 +25,7 @@ get_url(Url) ->
         {ok, <<>>, _} ->
             log:info("[main] EmptyResp"),
             <<>>;
-        {ok, Page, _} ->
+        {ok, <<"<", _/binary>> = Page, _} ->
             %log:info("[main] Page: ~p", [Page]),
             try
                 Tree0 = mochiweb_html:parse(Page),
@@ -34,6 +34,9 @@ get_url(Url) ->
             catch _ ->
                       <<>>
             end;
+        {ok, Page, _} ->
+            log:info("[main] InvalidPage: ~p", [Page]),
+            <<>>;
         Other ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
