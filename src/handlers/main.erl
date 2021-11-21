@@ -10,7 +10,7 @@ init(Req, _) ->
     {ok, MainPage, _} = http_service:getURL(<<"https://", ?TARGET/binary, "/">>),
     Tree0 = mochiweb_html:parse(MainPage),
     Tree = get_links(Tree0),
-    log:info("[main] MainPage: ~p", [Tree]),
+%    log:info("[main] MainPage: ~p", [Tree]),
     Resp = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, list_to_binary(mochiweb_html:to_html(Tree)), Req),
     {ok, Resp, []}.
 
@@ -20,7 +20,7 @@ start(Url) ->
     {ok, MainPage, _} = http_service:getURL(Url),
     Tree0 = mochiweb_html:parse(MainPage),
     Tree = get_links(Tree0),
-    log:info("[main] MainPage: ~p", [Tree]),
+%    log:info("[main] MainPage: ~p", [Tree]),
     list_to_binary(mochiweb_html:to_html(Tree)).
 
 
@@ -30,10 +30,10 @@ start(Url) ->
 %    get_links(Tree, []).
 
 get_links({<<"link">>, Tags, Body}) ->
-    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+%    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"link">>, handle_links(Tags), Body};
 get_links({<<"a">>, Tags, Body}) ->
-    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+%    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"a">>, handle_links(Tags), Body};
 get_links({_, _, []} = Object) ->
     Object;
@@ -60,8 +60,18 @@ handle_links([{<<"href">>, Url}|Tail], Acc) ->
         nomatch ->
             handle_links(Tail, [{<<"href">>, Url}|Acc]);
         _ ->
-            Uuid = list_to_binary(uuid:uuid_to_string(uuid:get_v4())),
-            ets:insert(ets_link_to_url, {Uuid, Url}),
+%            Uuid = list_to_binary(uuid:uuid_to_string(uuid:get_v4())),
+            Uuid =
+            case ets:lookup(ets_link_to_url, Url) of
+                [{Url, Key}] ->
+                    Key;
+                _ ->
+                    Key = list_to_binary(uuid:uuid_to_string(uuid:get_v4())),
+                    ets:insert(ets_link_to_url, {Url, Uuid}),
+                    ets:insert(ets_link_to_url, {Uuid, Url}),
+                    Key
+            end,
+%            ets:insert(ets_link_to_url, {Uuid, Url}),
             handle_links(Tail, [{<<"href">>, <<"http://", ?MY_HOST/binary, "/link/", Uuid/binary>>}|Acc])
     end;
 handle_links([Object|Tail], Acc) ->
