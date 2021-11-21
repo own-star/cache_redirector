@@ -19,6 +19,9 @@ start(<<"//", Rest/binary>>) ->
 start(Url) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:getURL(Url) of
+        {ok, [], _} ->
+            log:info("[main] EmptyResp"),
+            <<>>;
         {ok, Page, _} ->
             Tree0 = mochiweb_html:parse(Page),
             Tree = get_links(Tree0),
