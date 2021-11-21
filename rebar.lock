@@ -1,0 +1,26 @@
+{"1.1.0",
+[{<<"cowboy">>,{pkg,<<"cowboy">>,<<"2.9.0">>},0},
+ {<<"cowlib">>,{pkg,<<"cowlib">>,<<"2.11.0">>},1},
+ {<<"exomler">>,
+  {git,"https://github.com/erlangbureau/exomler.git",
+       {ref,"27209acb4231b5da5d167dd1f85ee08c9a654793"}},
+  0},
+ {<<"mochiweb">>,
+  {git,"https://github.com/mochi/mochiweb.git",
+       {ref,"835b107a4da4550080d032623ff6ae9a18d02c37"}},
+  0},
+ {<<"quickrand">>,
+  {git,"https://github.com/okeuday/quickrand.git",
+       {ref,"036f1a2037de541302438f7d0a31d5122aae98e2"}},
+  1},
+ {<<"ranch">>,{pkg,<<"ranch">>,<<"1.8.0">>},1},
+ {<<"uuid">>,
+  {git,"https://github.com/okeuday/uuid.git",
+       {ref,"8e8a34e52817ab9e2a9378cf3b8ddeeed7b3cbae"}},
+  0}]}.
+[
+{pkg_hash,[
+ {<<"cowboy">>, <<"865DD8B6607E14CF03282E10E934023A1BD8BE6F6BACF921A7E2A96D800CD452">>},
+ {<<"cowlib">>, <<"0B9FF9C346629256C42EBE1EEB769A83C6CB771A6EE5960BD110AB0B9B872063">>},
+ {<<"ranch">>, <<"8C7A100A139FD57F17327B6413E4167AC559FBC04CA7448E9BE9057311597A1D">>}]}
+].

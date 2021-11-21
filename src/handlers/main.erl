@@ -72,8 +72,8 @@ handle_links([{<<"href">>, Url}|Tail], Acc) ->
                     Key;
                 _ ->
                     Key = list_to_binary(uuid:uuid_to_string(uuid:get_v4())),
-                    ets:insert(ets_link_to_url, {Url, Uuid}),
-                    ets:insert(ets_link_to_url, {Uuid, Url}),
+                    ets:insert(ets_link_to_url, {Url, Key}),
+                    ets:insert(ets_link_to_url, {Key, Url}),
                     Key
             end,
 %            ets:insert(ets_link_to_url, {Uuid, Url}),
