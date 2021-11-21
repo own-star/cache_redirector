@@ -18,10 +18,15 @@ start(<<"//", Rest/binary>>) ->
     start(<<"https://", Rest/binary>>);
 start(Url) ->
     log:info("[main] Url: ~p", [Url]),
-    {ok, MainPage, _} = http_service:getURL(Url),
-    Tree0 = mochiweb_html:parse(MainPage),
-    Tree = get_links(Tree0),
-    list_to_binary(mochiweb_html:to_html(Tree)).
+    case http_service:getURL(Url) of
+        {ok, Page, _} ->
+            Tree0 = mochiweb_html:parse(Page),
+            Tree = get_links(Tree0),
+            list_to_binary(mochiweb_html:to_html(Tree));
+        Other ->
+            log:info("[main] HttpResp: ~p", [Other]),
+            <<>>
+    end.
 
 
 %%%%%%%%%%% LOCAL
