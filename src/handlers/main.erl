@@ -23,6 +23,7 @@ start(Url) ->
             log:info("[main] EmptyResp"),
             <<>>;
         {ok, Page, _} ->
+            log:info("[main] Page: ~p", [Page]),
             Tree0 = mochiweb_html:parse(Page),
             Tree = get_links(Tree0),
             list_to_binary(mochiweb_html:to_html(Tree));
