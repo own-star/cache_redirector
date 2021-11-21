@@ -11,7 +11,7 @@ init(Req, _) ->
     case ets:lookup(ets_link_to_url, Path) of
         [{Path, Url}] ->
             log:info("Url: ~p", [Url]),
-            Body = main:start(Url),
+            Body = main:get_url(Url),
             Response = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, Body, Req),
             {ok, Response, []};
         _ ->

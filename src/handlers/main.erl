@@ -3,7 +3,7 @@
 -include("cr.hrl").
 
 -export([init/2]).
--export([start/1]).
+-export([get_url/1]).
 -export([get_links/1]).
 
 init(Req, _) ->
@@ -14,11 +14,14 @@ init(Req, _) ->
     Resp = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, list_to_binary(mochiweb_html:to_html(Tree)), Req),
     {ok, Resp, []}.
 
-start(<<"//", Rest/binary>>) ->
-    start(<<"https://", Rest/binary>>);
-start(Url) ->
+get_url(<<"//", Rest/binary>>) ->
+    get_url(<<"https://", Rest/binary>>);
+get_url(Url) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:getURL(Url) of
+        {ok, "", _} ->
+            log:info("[main] EmptyResp"),
+            <<>>;
         {ok, <<>>, _} ->
             log:info("[main] EmptyResp"),
             <<>>;
