@@ -17,10 +17,10 @@ init(Req, _) ->
 start(<<"//", Rest/binary>>) ->
     start(<<"https://", Rest/binary>>);
 start(Url) ->
+    log:info("[main] Url: ~p", [Url]),
     {ok, MainPage, _} = http_service:getURL(Url),
     Tree0 = mochiweb_html:parse(MainPage),
     Tree = get_links(Tree0),
-%    log:info("[main] MainPage: ~p", [Tree]),
     list_to_binary(mochiweb_html:to_html(Tree)).
 
 
