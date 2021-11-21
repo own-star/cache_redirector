@@ -35,8 +35,8 @@ get_url(Url) ->
                       <<>>
             end;
         {ok, Page, _} ->
-            log:info("[main] InvalidPage: ~p", [Page]),
-            <<>>;
+%            log:info("[main] InvalidPage: ~p", [Page]),
+            Page;
         Other ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
