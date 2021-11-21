@@ -19,7 +19,7 @@ start(<<"//", Rest/binary>>) ->
 start(Url) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:getURL(Url) of
-        {ok, [], _} ->
+        {ok, <<>>, _} ->
             log:info("[main] EmptyResp"),
             <<>>;
         {ok, Page, _} ->
