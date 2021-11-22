@@ -8,7 +8,8 @@ init(Req, _) ->
     PathList = cowboy_req:path_info(Req),
     Method = cowboy_req:method(Req),
     [Path|_] = PathList,
-    log:info("Path: ~p, PathList: ~p", [Path, PathList]),
+    Qs = cowboy_req:qs(Req),
+    log:info("Path: ~p, PathList: ~p, Qs: ~p", [Path, PathList, Qs]),
     case ets:lookup(ets_link_to_url, Path) of
         [{Path, Url}] ->
             log:info("Url: ~p", [Url]),
