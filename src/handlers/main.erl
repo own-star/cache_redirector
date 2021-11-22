@@ -83,6 +83,9 @@ get_links({<<"link">>, Tags, Body}) ->
 get_links({<<"a">>, Tags, Body}) ->
 %    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"a">>, handle_links(Tags), Body};
+get_links({<<"form">>, Tags, Body}) ->
+%    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+    {<<"form">>, handle_links(Tags), Body};
 get_links({_, _, []} = Object) ->
     Object;
 get_links({_, _} = Object) ->
@@ -137,6 +140,23 @@ handle_links([{<<"data-search-href">>, Url}|Tail], Acc) ->
                     Key
             end,
             handle_links(Tail, [{<<"data-search-href">>, <<"http://", ?MY_HOST/binary, "/link/", Uuid/binary>>}|Acc])
+    end;
+ handle_links([{<<"action">>, Url}|Tail], Acc) ->
+    case re:run(Url, ?TARGET) of
+        nomatch ->
+            handle_links(Tail, [{<<"action">>, Url}|Acc]);
+        _ ->
+            Uuid =
+            case ets:lookup(ets_link_to_url, Url) of
+                [{Url, Key}] ->
+                    Key;
+                _ ->
+                    Key = list_to_binary(uuid:uuid_to_string(uuid:get_v4())),
+                    ets:insert(ets_link_to_url, {Url, Key}),
+                    ets:insert(ets_link_to_url, {Key, Url}),
+                    Key
+            end,
+            handle_links(Tail, [{<<"action">>, <<"http://", ?MY_HOST/binary, "/link/", Uuid/binary>>}|Acc])
     end;
 handle_links([Object|Tail], Acc) ->
     handle_links(Tail, [Object|Acc]);
