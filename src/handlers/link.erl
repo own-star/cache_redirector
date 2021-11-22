@@ -14,8 +14,12 @@ init(Req, _) ->
         [{Path, Url}] ->
             log:info("Url: ~p", [Url]),
             case Method of
-                <<"GET">> ->
+                <<"GET">> when Qs =:= <<>> ->
                     Body = main:get_url(Url),
+                    Response = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, Body, Req),
+                    {ok, Response, []};
+                <<"GET">> ->
+                    Body = main:get_url(<<Url/binary, "?", Qs/binary>>),
                     Response = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, Body, Req),
                     {ok, Response, []};
                 <<"POST">> ->
