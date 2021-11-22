@@ -3,7 +3,7 @@
 -include("cr.hrl").
 
 -export([init/2]).
--export([get_url/1]).
+-export([get_url/1, post_url/3]).
 -export([get_links/1]).
 
 init(Req, _) ->
@@ -41,6 +41,35 @@ get_url(Url) ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
     end.
+
+post_url(<<"//", Rest/binary>>, Data, Headers) ->
+    post_url(<<"https://", Rest/binary>>, Data, Headers);
+post_url(Url, Data, Headers) ->
+    log:info("[main] Url: ~p", [Url]),
+    case http_service:post(Url, Data, Headers) of
+        {ok, "", _} ->
+            log:info("[main] EmptyResp"),
+            <<>>;
+        {ok, <<>>, _} ->
+            log:info("[main] EmptyResp"),
+            <<>>;
+        {ok, <<"<", _/binary>> = Page, _} ->
+            %log:info("[main] Page: ~p", [Page]),
+            try
+                Tree0 = mochiweb_html:parse(Page),
+                Tree = get_links(Tree0),
+                list_to_binary(mochiweb_html:to_html(Tree))
+            catch _ ->
+                      <<>>
+            end;
+        {ok, Page, _} ->
+%            log:info("[main] InvalidPage: ~p", [Page]),
+            Page;
+        Other ->
+            log:info("[main] HttpResp: ~p", [Other]),
+            <<>>
+    end.
+
 
 
 %%%%%%%%%%% LOCAL
