@@ -87,7 +87,7 @@ request_run(post, URL, Headers, Body, HTTPOptions, _LogOptions)->
 
     ReqBody = to_binary(ReqBody0),
     log:info("[HTTP_SERVICE_REQ ~ts] ~ts",
-             [log:mask_body(to_binary(URL)), log:mask_body(ReqBody)]),
+             [to_binary(URL), ReqBody]),
     HttpProfile = http_server:get_profile(),
     Start  = erlang:system_time(milli_seconds),
     Result = httpc:request(post, {to_list(URL), to_headers(Headers),
@@ -99,8 +99,7 @@ request_run(post, URL, Headers, Body, HTTPOptions, _LogOptions)->
 
         {ok, {{_, Status, _}, _, Response}} ->
 
-            log:info("[HTTP_SERVICE_RES ~p ~pms] ~ts",
-                     [Status, Time, log:mask_body(Response)]),
+%            log:info("[HTTP_SERVICE_RES ~p ~pms] ~ts", [Status, Time, Response]),
             {ok, Status, Response};
 
         Error   ->
@@ -123,8 +122,7 @@ request_run(get, URL, Headers, _ReqBody, HTTPOptions, _LogOptions)->
     case Result of
 
         {ok, {{_, Status, _}, _, Response}} ->
-            log:info("[HTTP_SERVICE_RES ~p ~pms] ~ts",
-                     [Status, Time, log:mask_body(Response)]),
+%            log:info("[HTTP_SERVICE_RES ~p ~pms] ~ts", [Status, Time, Response]),
             {ok, Status, Response};
 
         Error   ->
