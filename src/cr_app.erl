@@ -28,6 +28,9 @@ start(_StartType, _StartArgs) ->
 
     Dispatch = cowboy_router:compile([{'_', [
        {"/link/[...]", link, []},
+       {"/js/[...]", cowboy_static, {priv_dir, cr, "orig/js"}},
+       {"/public/js/[...]", cowboy_static, {priv_dir, cr, "orig/public/js"}},
+       {"/stylesheets/[...]", cowboy_static, {priv_dir, cr, "orig/stylesheets"}},
        {"/[...]", main, []}
     ]}]),
     TransOpts = #{
