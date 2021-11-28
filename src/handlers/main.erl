@@ -134,6 +134,7 @@ handle_links([{<<"href">>, Url}|Tail], Acc) ->
                     ets:insert(ets_link_to_url, {Key, Url}),
                     Key
             end,
+            log:info("[HandleLink] {href} Key: ~p, Url: ~p", [Key, Url]),
             handle_links(Tail, [{<<"href">>, <<"http://", ?MY_HOST/binary, "/link/", Uuid/binary>>}|Acc])
     end;
 handle_links([{<<"data-search-href">>, Url}|Tail], Acc) ->
