@@ -8,6 +8,7 @@
 
 init(Req, _) ->
     {ok, MainPage, _} = http_service:getURL(<<"https://", ?TARGET/binary, "/">>),
+    search_links(MainPage),
     Tree0 = mochiweb_html:parse(MainPage),
     Tree = get_links(Tree0),
 %    log:info("[main] MainPage: ~p", [Tree]),
@@ -206,3 +207,24 @@ strip_head(<<32, Rest/binary>>) ->
 strip_head(Rest) ->
     Rest.
 
+
+search_links(Page) ->
+    search_links(Page, <<>>).
+
+search_links(<<"\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
+    {Link, NewRest} = get_link(Rest),
+    FullLink = << "\"https://", ?TARGET/binary, Link/binary>>,
+    log:info("[SearchLink] ~p", [FullLink]),
+    search_links(NewRest, <<Acc/binary, FullLink/binary>>);
+search_links(<<X, Rest/binary>>, Acc) ->
+    search_links(Rest, <<Acc/binary, X>>);
+search_links(<<>>, Acc) ->
+    Acc.
+
+get_link(Bin) ->
+    get_link(Bin, <<>>).
+
+get_link(<<"\"", Rest/binary>>, Acc) ->
+    {<<Acc/binary, "\"">>, Rest};
+get_link(<<X, Rest/binary>>, Acc) ->
+    get_link(Rest, <<Acc/binary, X>>).
