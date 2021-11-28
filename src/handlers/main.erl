@@ -58,6 +58,12 @@ search_links(<<"\'https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
     log:info("[SearchLink] Key: ~p, Uno Url: ~p", [Key, FullLink]),
     search_links(NewRest, <<Acc/binary, "\'http://", ?MY_HOST/binary, "/link/", Key/binary, "\'">>);
 
+search_links(<<"srcset=\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
+    {Link, NewRest} = get_link(Rest),
+    FullLink = <<"https://", ?TARGET/binary, Link/binary>>,
+    Set = get_set(FullLink),
+    log:info("[SearchLink] Set: ~p, Url: ~p", [Set, FullLink]),
+    search_links(NewRest, <<Acc/binary, "srcset=\"", Set/binary, "\"">>);
 search_links(<<"\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
     {Link, NewRest} = get_link(Rest),
     FullLink = <<"https://", ?TARGET/binary, Link/binary>>,
@@ -105,3 +111,13 @@ get_key(Link) ->
             ets:insert(ets_link_to_url, {Key, Link}),
             Key
     end.
+
+get_set(Set) ->
+    lists:foldr(fun(Link, Acc) ->
+                        Key = get_key(Link),
+                        Url = <<"https://", ?MY_HOST/binary, "/link/", Key/binary>>,
+                        case Acc of
+                            <<>> -> Url;
+                            _ -> <<Acc/binary, ", ", Url/binary>>
+                        end
+                end, <<>>, binary:split(Set, <<",">>)).
