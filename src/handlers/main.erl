@@ -51,12 +51,12 @@ search_links(<<"\"https://my.", ?TARGET_LIST, Rest/binary>>, Acc) ->
     log:info("[SearchLink] Key: ~p, Url: ~p", [Key, FullLink]),
     search_links(NewRest, <<Acc/binary, "\"http://", ?MY_HOST/binary, "/link/", Key/binary, "\"">>);
 
-search_links(<<"\'https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
-    {Link, NewRest} = get_link(Rest),
-    FullLink = << "https://", ?TARGET/binary, Link/binary>>,
-    Key = get_key(FullLink),
-    log:info("[SearchLink] Key: ~p, Url: ~p", [Key, FullLink]),
-    search_links(NewRest, <<Acc/binary, "\'http://", ?MY_HOST/binary, "/link/", Key/binary, "\'">>);
+%search_links(<<"\'https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
+%    {Link, NewRest} = get_link(Rest),
+%    FullLink = << "https://", ?TARGET/binary, Link/binary>>,
+%    Key = get_key(FullLink),
+%    log:info("[SearchLink] Key: ~p, Url: ~p", [Key, FullLink]),
+%    search_links(NewRest, <<Acc/binary, "\'http://", ?MY_HOST/binary, "/link/", Key/binary, "\'">>);
 
 search_links(<<"\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
     {Link, NewRest} = get_link(Rest),
