@@ -134,6 +134,7 @@ get_set(Set) ->
                             [Link, W] ->
                                 Key = get_key(Link),
                                 Url = <<"http://", ?MY_HOST/binary, "/link/", Key/binary, " ", W/binary>>,
+                                log:info("[SearchLink] {get_set} Url: ~p, W: ~p", [Url, W]),
                                 case Acc of
                                     <<>> -> Url;
                                     _ -> <<Acc/binary, ", ", Url/binary>>
@@ -141,6 +142,7 @@ get_set(Set) ->
                             [Link] ->
                                 Key = get_key(Link),
                                 Url = <<"http://", ?MY_HOST/binary, "/link/", Key/binary>>,
+                                log:info("[SearchLink] {get_set} Url: ~p", [Url]),
                                 case Acc of
                                     <<>> -> Url;
                                     _ -> <<Acc/binary, ", ", Url/binary>>
