@@ -86,6 +86,9 @@ post_url(Url, Data, Headers) ->
 get_links({<<"link">>, Tags, Body}) ->
     log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"link">>, handle_links(Tags), Body};
+get_links({<<"li">>, Tags, Body}) ->
+    log:info("Li: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+    {<<"li">>, handle_links(Tags), Body};
 get_links({<<"a">>, Tags, Body}) ->
     log:info("A: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"a">>, handle_links(Tags), Body};
@@ -93,7 +96,7 @@ get_links({<<"form">>, Tags, Body}) ->
     log:info("Form: ~p", [proplists:get_value(<<"action">>, Tags, <<>>)]),
     {<<"form">>, handle_links(Tags), Body};
 get_links({<<"script">>, Tags, Body}) ->
-    log:info("Script: ~p", [proplists:get_value(<<"src">>, Tags, <<>>)]),
+    log:info("Script: ~p", [Tags]),
     {<<"script">>, handle_links(Tags), Body};
 get_links({_, _, []} = Object) ->
     Object;
