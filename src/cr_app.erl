@@ -31,6 +31,7 @@ start(_StartType, _StartArgs) ->
        {"/js/[...]", cowboy_static, {priv_dir, cr, "orig/js"}},
        {"/public/js/[...]", cowboy_static, {priv_dir, cr, "orig/public/js"}},
        {"/stylesheets/[...]", cowboy_static, {priv_dir, cr, "orig/stylesheets"}},
+       {"/wp-content/[...]", cowboy_static, {priv_dir, cr, "orig/wp-content"}},
        {"/[...]", main, []}
     ]}]),
     TransOpts = #{
