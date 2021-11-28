@@ -54,6 +54,9 @@ search_links(<<"\"https://my.", ?TARGET_LIST, Rest/binary>>, Acc) ->
 search_links(<<"'https://hightech.trade/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4'", Rest/binary>>, Acc) ->
     log:info("[SearchLink] ScriptUrl: ~p", [<<"'https://hightech.trade/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4'">>]),
     search_links(Rest, <<Acc/binary, "'https://hightech.trade/wp-content/plugins/contact-form-7/includes/css/styles.css?ver=5.1.4'">>);
+search_links(<<"'https://hightech.trade/wp-content/plugins/colibri-page-builder/extend-builder/assets/static/css/theme.css?ver=1.0.98'", Rest/binary>>, Acc) ->
+    log:info("[SearchLink] ScriptUrl: ~p", [<<"'https://hightech.trade/wp-content/plugins/colibri-page-builder/extend-builder/assets/static/css/theme.css?ver=1.0.98'">>]),
+    search_links(Rest, <<Acc/binary, "'https://hightech.trade/wp-content/plugins/colibri-page-builder/extend-builder/assets/static/css/theme.css?ver=1.0.98'">>);
 search_links(<<"'https://hightech.trade/wp-content/themes/colibri-wp/my-stylesheet.css?ver=4.9.12'", Rest/binary>>, Acc) ->
     log:info("[SearchLink] ScriptUrl: ~p", [<<"'https://hightech.trade/wp-content/themes/colibri-wp/my-stylesheet.css?ver=4.9.12'">>]),
     search_links(Rest, <<Acc/binary, "'https://hightech.trade/wp-content/themes/colibri-wp/my-stylesheet.css?ver=4.9.12'">>);
@@ -82,7 +85,7 @@ search_links(<<"\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
     {Link, NewRest} = get_link(Rest),
     FullLink = <<"https://", ?TARGET/binary, Link/binary>>,
     Key = get_key(FullLink),
-    log:info("[SearchLink] Key: ~p, Double Url: ~p", [Key, FullLink]),
+%    log:info("[SearchLink] Key: ~p, Double Url: ~p", [Key, FullLink]),
     search_links(NewRest, <<Acc/binary, "\"http://", ?MY_HOST/binary, "/link/", Key/binary, "\"">>);
 
 search_links(<<"(https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
