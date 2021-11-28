@@ -21,26 +21,27 @@ get_url(Url) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:getURL(Url) of
         {ok, Page, _} ->
-            case strip_head(Page) of
-                "" ->
-                    log:info("[main] EmptyResp"),
-                    <<>>;
-                <<>> ->
-                    log:info("[main] EmptyResp"),
-                    <<>>;
-                <<"<", _/binary>> ->
-                    %log:info("[main] Page: ~p", [Page]),
-                    try
-                        Tree0 = mochiweb_html:parse(Page),
-                        Tree = get_links(Tree0),
-                        list_to_binary(mochiweb_html:to_html(Tree))
-                    catch _ ->
-                      <<>>
-                    end;
-                _ ->
-                    log:info("[main] InvalidPage: ~p", [Url]),
-                    Page
-            end;
+            search_links(Page);
+%            case strip_head(Page) of
+%                "" ->
+%                    log:info("[main] EmptyResp"),
+%                    <<>>;
+%                <<>> ->
+%                    log:info("[main] EmptyResp"),
+%                    <<>>;
+%                <<"<", _/binary>> ->
+%                    %log:info("[main] Page: ~p", [Page]),
+%                    try
+%                        Tree0 = mochiweb_html:parse(Page),
+%                        Tree = get_links(Tree0),
+%                        list_to_binary(mochiweb_html:to_html(Tree))
+%                    catch _ ->
+%                      <<>>
+%                    end;
+%                _ ->
+%                    log:info("[main] InvalidPage: ~p", [Url]),
+%                    Page
+%            end;
         Other ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
@@ -52,26 +53,27 @@ post_url(Url, Data, Headers) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:post(Url, Data, Headers) of
         {ok, Page, _} ->
-            case strip_head(Page) of
-                "" ->
-                    log:info("[main] EmptyResp"),
-                    <<>>;
-                <<>> ->
-                    log:info("[main] EmptyResp"),
-                    <<>>;
-                <<"<", _/binary>> ->
-                    %log:info("[main] Page: ~p", [Page]),
-                    try
-                        Tree0 = mochiweb_html:parse(Page),
-                        Tree = get_links(Tree0),
-                        list_to_binary(mochiweb_html:to_html(Tree))
-                    catch _ ->
-                      <<>>
-                    end;
-                _ ->
-                    log:info("[main] InvalidPage: ~p", [Url]),
-                    Page
-            end;
+            search_links(Page);
+%            case strip_head(Page) of
+%                "" ->
+%                    log:info("[main] EmptyResp"),
+%                    <<>>;
+%                <<>> ->
+%                    log:info("[main] EmptyResp"),
+%                    <<>>;
+%                <<"<", _/binary>> ->
+%                    %log:info("[main] Page: ~p", [Page]),
+%                    try
+%                        Tree0 = mochiweb_html:parse(Page),
+%                        Tree = get_links(Tree0),
+%                        list_to_binary(mochiweb_html:to_html(Tree))
+%                    catch _ ->
+%                      <<>>
+%                    end;
+%                _ ->
+%                    log:info("[main] InvalidPage: ~p", [Url]),
+%                    Page
+%            end;
         Other ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
