@@ -212,24 +212,37 @@ search_links(Page) ->
     search_links(Page, <<>>).
 
 search_links(<<"\"https://my.", ?TARGET_LIST, Rest/binary>>, Acc) ->
-    {Link, NewRest} = get_link(Rest, "\""),
+    {Link, NewRest} = get_link(Rest),
     FullLink = << "\"https://my.", ?TARGET/binary, Link/binary>>,
-    log:info("[SearchLink] ~p", [FullLink]),
+    Key = get_key(FullLink),
+    log:info("[SearchLink] Key: ~p, Url: ~p", [Key, FullLink]),
     search_links(NewRest, <<Acc/binary, FullLink/binary>>);
 search_links(<<"\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
-    {Link, NewRest} = get_link(Rest, "\""),
+    {Link, NewRest} = get_link(Rest),
     FullLink = << "\"https://", ?TARGET/binary, Link/binary>>,
-    log:info("[SearchLink] ~p", [FullLink]),
+    Key = get_key(FullLink),
+    log:info("[SearchLink] Key: ~p, Url: ~p", [Key, FullLink]),
     search_links(NewRest, <<Acc/binary, FullLink/binary>>);
 search_links(<<X, Rest/binary>>, Acc) ->
     search_links(Rest, <<Acc/binary, X>>);
 search_links(<<>>, Acc) ->
     Acc.
 
-get_link(Bin, Delimeter) ->
-    get_link(Bin, Delimeter, <<>>).
+get_link(Bin) ->
+    get_link(Bin, <<>>).
 
-get_link(<<Delimeter, Rest/binary>>, Delimeter, Acc) ->
+get_link(<<"\"", Rest/binary>>, Acc) ->
     {<<Acc/binary, "\"">>, Rest};
-get_link(<<X, Rest/binary>>, Delimeter, Acc) ->
-    get_link(Rest, Delimeter, <<Acc/binary, X>>).
+get_link(<<X, Rest/binary>>, Acc) ->
+    get_link(Rest, <<Acc/binary, X>>).
+
+get_key(Link) ->
+    case ets:lookup(ets_link_to_url, Link) of
+        [{Link, Key}] ->
+            Key;
+        _ ->
+            Key = list_to_binary(uuid:uuid_to_string(uuid:get_v4())),
+            ets:insert(ets_link_to_url, {Link, Key}),
+            ets:insert(ets_link_to_url, {Key, Link}),
+            Key
+    end.
