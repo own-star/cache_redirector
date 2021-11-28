@@ -86,9 +86,9 @@ post_url(Url, Data, Headers) ->
 get_links({<<"link">>, Tags, Body}) ->
     log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"link">>, handle_links(Tags), Body};
-get_links({<<"li">>, Tags, Body}) ->
-    log:info("Li: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
-    {<<"li">>, handle_links(Tags), Body};
+get_links({<<"img">>, Tags, Body}) ->
+    log:info("Img: ~p", [proplists:get_value(<<"src">>, Tags, <<>>)]),
+    {<<"img">>, handle_links(Tags), Body};
 get_links({<<"a">>, Tags, Body}) ->
     log:info("A: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"a">>, handle_links(Tags), Body};
