@@ -55,6 +55,7 @@ search_links(<<"'https://", ?TARGET_LIST, "/wp-content/plugins/colibri-page-buil
     {Qs, NewRest} = get_link(Rest),
     log:info("[SearchLink] ScriptUrl: ~p", [<<"'https://", ?MY_HOST/binary, "/wp-content/plugins/colibri-page-builder/extend-builder/assets/static/css/theme.css", Qs/binary, "'">>]),
     search_links(NewRest, <<Acc/binary, "'http://", ?MY_HOST/binary, "/wp-content/plugins/colibri-page-builder/extend-builder/assets/static/css/theme.css", Qs/binary, "'">>);
+
 search_links(<<"'https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
     {Link, NewRest} = get_link(Rest),
     FullLink = <<"https://", ?TARGET/binary, Link/binary>>,
@@ -128,6 +129,7 @@ get_key(Link) ->
 
 get_set(Set) ->
     lists:foldr(fun(Link0, Acc) ->
+                        log:info("[SearchLink] {get_set} Link0: ~p", [Link0]),
                         case binary:split(Link0, <<" ">>) of
                             [Link, W] ->
                                 Key = get_key(Link),
