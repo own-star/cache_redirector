@@ -120,4 +120,4 @@ get_set(Set) ->
                             <<>> -> Url;
                             _ -> <<Acc/binary, ", ", Url/binary>>
                         end
-                end, <<>>, binary:split(Set, <<",">>)).
+                end, <<>>, binary:split(Set, <<",">>, [global])).
