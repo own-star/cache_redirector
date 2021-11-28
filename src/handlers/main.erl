@@ -211,8 +211,13 @@ strip_head(Rest) ->
 search_links(Page) ->
     search_links(Page, <<>>).
 
+search_links(<<"\"https://my.", ?TARGET_LIST, Rest/binary>>, Acc) ->
+    {Link, NewRest} = get_link(Rest, "\""),
+    FullLink = << "\"https://my.", ?TARGET/binary, Link/binary>>,
+    log:info("[SearchLink] ~p", [FullLink]),
+    search_links(NewRest, <<Acc/binary, FullLink/binary>>);
 search_links(<<"\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
-    {Link, NewRest} = get_link(Rest),
+    {Link, NewRest} = get_link(Rest, "\""),
     FullLink = << "\"https://", ?TARGET/binary, Link/binary>>,
     log:info("[SearchLink] ~p", [FullLink]),
     search_links(NewRest, <<Acc/binary, FullLink/binary>>);
@@ -221,10 +226,10 @@ search_links(<<X, Rest/binary>>, Acc) ->
 search_links(<<>>, Acc) ->
     Acc.
 
-get_link(Bin) ->
-    get_link(Bin, <<>>).
+get_link(Bin, Delimeter) ->
+    get_link(Bin, Delimeter, <<>>).
 
-get_link(<<"\"", Rest/binary>>, Acc) ->
+get_link(<<Delimeter, Rest/binary>>, Delimeter, Acc) ->
     {<<Acc/binary, "\"">>, Rest};
-get_link(<<X, Rest/binary>>, Acc) ->
-    get_link(Rest, <<Acc/binary, X>>).
+get_link(<<X, Rest/binary>>, Delimeter, Acc) ->
+    get_link(Rest, Delimeter, <<Acc/binary, X>>).
