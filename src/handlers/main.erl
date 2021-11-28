@@ -67,7 +67,7 @@ search_links(<<"srcset=\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
 
 search_links(<<"\"https:\\/\\/", ?TARGET_LIST, Rest/binary>>, Acc) ->
     {Link, NewRest} = get_link(Rest),
-    FullLink = <<"https:\\/\\/", ?TARGET/binary, Link/binary>>,
+    FullLink = <<"https://", ?TARGET/binary, Link/binary>>,
     Key = get_key(FullLink),
     log:info("[SearchLink] Key: ~p, Slashes Url: ~p", [Key, FullLink]),
     search_links(NewRest, <<Acc/binary, "\"http:\\/\\/", ?MY_HOST/binary, "\\/link\\/", Key/binary, "\"">>);
@@ -101,11 +101,13 @@ get_link(Bin) ->
     get_link(Bin, <<>>).
 
 get_link(<<"\"", Rest/binary>>, Acc) ->
-    {<<Acc/binary>>, Rest};
+    {Acc, Rest};
 get_link(<<"\'", Rest/binary>>, Acc) ->
-    {<<Acc/binary>>, Rest};
+    {Acc, Rest};
 get_link(<<")", Rest/binary>>, Acc) ->
-    {<<Acc/binary>>, Rest};
+    {Acc, Rest};
+get_link(<<"\\", Rest/binary>>, Acc) ->
+    get_link(Rest, Acc);
 get_link(<<X, Rest/binary>>, Acc) ->
     get_link(Rest, <<Acc/binary, X>>).
 
