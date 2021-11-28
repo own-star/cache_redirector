@@ -8,11 +8,11 @@
 
 init(Req, _) ->
     {ok, MainPage, _} = http_service:getURL(<<"https://", ?TARGET/binary, "/">>),
-    search_links(MainPage),
-    Tree0 = mochiweb_html:parse(MainPage),
-    Tree = get_links(Tree0),
+    NewPage = search_links(MainPage),
+%    Tree0 = mochiweb_html:parse(MainPage),
+%    Tree = get_links(Tree0),
 %    log:info("[main] MainPage: ~p", [Tree]),
-    Resp = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, list_to_binary(mochiweb_html:to_html(Tree)), Req),
+    Resp = cowboy_req:reply(200, #{<<"content-type">> => <<"text/html">>}, NewPage, Req),
     {ok, Resp, []}.
 
 get_url(<<"//", Rest/binary>>) ->
@@ -216,13 +216,14 @@ search_links(<<"\"https://my.", ?TARGET_LIST, Rest/binary>>, Acc) ->
     FullLink = << "\"https://my.", ?TARGET/binary, Link/binary>>,
     Key = get_key(FullLink),
     log:info("[SearchLink] Key: ~p, Url: ~p", [Key, FullLink]),
-    search_links(NewRest, <<Acc/binary, FullLink/binary>>);
+    search_links(NewRest, <<Acc/binary, "\"http://", ?MY_HOST/binary, "/link/", Key/binary, "\"">>);
 search_links(<<"\"https://", ?TARGET_LIST, Rest/binary>>, Acc) ->
     {Link, NewRest} = get_link(Rest),
     FullLink = << "\"https://", ?TARGET/binary, Link/binary>>,
     Key = get_key(FullLink),
     log:info("[SearchLink] Key: ~p, Url: ~p", [Key, FullLink]),
-    search_links(NewRest, <<Acc/binary, FullLink/binary>>);
+    search_links(NewRest, <<Acc/binary, "\"http://", ?MY_HOST/binary, "/link/", Key/binary, "\"">>);
+%    search_links(NewRest, <<Acc/binary, FullLink/binary>>);
 search_links(<<X, Rest/binary>>, Acc) ->
     search_links(Rest, <<Acc/binary, X>>);
 search_links(<<>>, Acc) ->
