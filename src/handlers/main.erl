@@ -19,24 +19,27 @@ get_url(<<"//", Rest/binary>>) ->
 get_url(Url) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:getURL(Url) of
-        {ok, "", _} ->
-            log:info("[main] EmptyResp"),
-            <<>>;
-        {ok, <<>>, _} ->
-            log:info("[main] EmptyResp"),
-            <<>>;
-        {ok, <<"<", _/binary>> = Page, _} ->
-            %log:info("[main] Page: ~p", [Page]),
-            try
-                Tree0 = mochiweb_html:parse(Page),
-                Tree = get_links(Tree0),
-                list_to_binary(mochiweb_html:to_html(Tree))
-            catch _ ->
-                      <<>>
-            end;
         {ok, Page, _} ->
-%            log:info("[main] InvalidPage: ~p", [Page]),
-            Page;
+            case strip_head(Page) of
+                "" ->
+                    log:info("[main] EmptyResp"),
+                    <<>>;
+                <<>> ->
+                    log:info("[main] EmptyResp"),
+                    <<>>;
+                <<"<", _/binary>> ->
+                    %log:info("[main] Page: ~p", [Page]),
+                    try
+                        Tree0 = mochiweb_html:parse(Page),
+                        Tree = get_links(Tree0),
+                        list_to_binary(mochiweb_html:to_html(Tree))
+                    catch _ ->
+                      <<>>
+                    end;
+                _ ->
+                    log:info("[main] InvalidPage: ~p", [Url]),
+                    Page
+            end;
         Other ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
@@ -47,24 +50,27 @@ post_url(<<"//", Rest/binary>>, Data, Headers) ->
 post_url(Url, Data, Headers) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:post(Url, Data, Headers) of
-        {ok, "", _} ->
-            log:info("[main] EmptyResp"),
-            <<>>;
-        {ok, <<>>, _} ->
-            log:info("[main] EmptyResp"),
-            <<>>;
-        {ok, <<"<", _/binary>> = Page, _} ->
-            %log:info("[main] Page: ~p", [Page]),
-            try
-                Tree0 = mochiweb_html:parse(Page),
-                Tree = get_links(Tree0),
-                list_to_binary(mochiweb_html:to_html(Tree))
-            catch _ ->
-                      <<>>
-            end;
         {ok, Page, _} ->
-%            log:info("[main] InvalidPage: ~p", [Page]),
-            Page;
+            case strip_head(Page) of
+                "" ->
+                    log:info("[main] EmptyResp"),
+                    <<>>;
+                <<>> ->
+                    log:info("[main] EmptyResp"),
+                    <<>>;
+                <<"<", _/binary>> ->
+                    %log:info("[main] Page: ~p", [Page]),
+                    try
+                        Tree0 = mochiweb_html:parse(Page),
+                        Tree = get_links(Tree0),
+                        list_to_binary(mochiweb_html:to_html(Tree))
+                    catch _ ->
+                      <<>>
+                    end;
+                _ ->
+                    log:info("[main] InvalidPage: ~p", [Url]),
+                    Page
+            end;
         Other ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
@@ -78,16 +84,16 @@ post_url(Url, Data, Headers) ->
 %    get_links(Tree, []).
 
 get_links({<<"link">>, Tags, Body}) ->
-%    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"link">>, handle_links(Tags), Body};
 get_links({<<"a">>, Tags, Body}) ->
-%    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+    log:info("A: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
     {<<"a">>, handle_links(Tags), Body};
 get_links({<<"form">>, Tags, Body}) ->
-%    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+    log:info("Form: ~p", [proplists:get_value(<<"action">>, Tags, <<>>)]),
     {<<"form">>, handle_links(Tags), Body};
 get_links({<<"script">>, Tags, Body}) ->
-%    log:info("Link: ~p", [proplists:get_value(<<"href">>, Tags, <<>>)]),
+    log:info("Script: ~p", [proplists:get_value(<<"src">>, Tags, <<>>)]),
     {<<"script">>, handle_links(Tags), Body};
 get_links({_, _, []} = Object) ->
     Object;
@@ -183,3 +189,16 @@ handle_links([Object|Tail], Acc) ->
     handle_links(Tail, [Object|Acc]);
 handle_links([], Acc) ->
     lists:reverse(Acc).
+
+
+strip_head(<<10, Rest/binary>>) ->
+    strip_head(Rest);
+strip_head(<<13, Rest/binary>>) ->
+    strip_head(Rest);
+strip_head(<<9, Rest/binary>>) ->
+    strip_head(Rest);
+strip_head(<<32, Rest/binary>>) ->
+    strip_head(Rest);
+strip_head(Rest) ->
+    Rest.
+
