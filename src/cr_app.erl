@@ -28,6 +28,7 @@ start(_StartType, _StartArgs) ->
 
     Dispatch = cowboy_router:compile([{'_', [
        {"/link/[...]", link, []},
+       {"/auth/countries", countries, []},
        {"/auth/[...]", cowboy_static, {priv_dir, cr, "orig/auth"}},
        {"/js/[...]", cowboy_static, {priv_dir, cr, "orig/js"}},
        {"/public/[...]", cowboy_static, {priv_dir, cr, "orig/public"}},
