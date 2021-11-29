@@ -30,7 +30,7 @@ start(_StartType, _StartArgs) ->
        {"/link/[...]", link, []},
        {"/auth/[...]", cowboy_static, {priv_dir, cr, "orig/auth"}},
        {"/js/[...]", cowboy_static, {priv_dir, cr, "orig/js"}},
-       {"/public/js/[...]", cowboy_static, {priv_dir, cr, "orig/public/js"}},
+       {"/public/[...]", cowboy_static, {priv_dir, cr, "orig/public"}},
        {"/stylesheets/[...]", cowboy_static, {priv_dir, cr, "orig/stylesheets"}},
        {"/wp-admin/[...]", cowboy_static, {priv_dir, cr, "orig/wp-admi"}},
        {"/wp-content/[...]", cowboy_static, {priv_dir, cr, "orig/wp-content"}},
