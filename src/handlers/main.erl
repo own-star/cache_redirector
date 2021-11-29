@@ -130,7 +130,7 @@ get_key(Link) ->
 get_set(Set) ->
     lists:foldl(fun(Link0, Acc) ->
                         log:info("[SearchLink] {get_set} Link0: ~p", [Link0]),
-                        case binary:split(strip_head(Link0), 32) of
+                        case binary:split(strip_head(Link0), <<32>>) of
                             [Link, W] ->
                                 Key = get_key(Link),
                                 Url = <<"http://", ?MY_HOST/binary, "/link/", Key/binary, " ", W/binary>>,
