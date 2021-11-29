@@ -24,7 +24,7 @@ start(_StartType, _StartArgs) ->
 
     http_server_sup:start_link(),
 
-    Port = binary_to_integer(?PORT),
+    Port = ?LISTEN_PORT,
 
     Dispatch = cowboy_router:compile([{'_', [
        {"/link/[...]", link, []},
