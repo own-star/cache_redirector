@@ -32,6 +32,7 @@ start(_StartType, _StartArgs) ->
        {"/public/js/[...]", cowboy_static, {priv_dir, cr, "orig/public/js"}},
        {"/stylesheets/[...]", cowboy_static, {priv_dir, cr, "orig/stylesheets"}},
        {"/wp-content/[...]", cowboy_static, {priv_dir, cr, "orig/wp-content"}},
+       {"/captcha.png", captcha, []},
        {"/[...]", main, []}
     ]}]),
     TransOpts = #{
