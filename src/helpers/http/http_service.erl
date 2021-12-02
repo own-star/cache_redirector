@@ -128,7 +128,8 @@ request_run(get, URL, Headers, _ReqBody, HTTPOptions, _LogOptions)->
             {error, Error}
     end.
 
-
+to_headers(Headers) when is_map(Headers) ->
+    to_headers(maps:to_list(Headers));
 to_headers(Headers)->
     lists:map(fun({Key, Val})->
         {util:to_list(Key), util:to_list(Val)}
