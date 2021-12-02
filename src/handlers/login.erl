@@ -6,7 +6,11 @@
 
 init(Req, _) ->
     Headers = cowboy_req:headers(Req),
-    NewHeaders = Headers#{<<"host">> => <<"hightech.trade">>,
+    NewHeaders = Headers#{<<":authority:">> => <<"my.hightech.trade">>,
+                          <<":method:">> => <<"POST">>,
+                          <<":path:">> => <<"/auth/login">>,
+                          <<":scheme:">> => <<"https">>,
+                          <<"host">> => <<"hightech.trade">>,
                           <<"origin">> => <<"https://my.hightech.trade">>,
                           <<"referer">> => <<"https://my.hightech.trade/login">>},
     {ok, Data, Req2} = cowboy_req:read_body(Req),
