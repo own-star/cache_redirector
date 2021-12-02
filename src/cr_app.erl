@@ -30,6 +30,7 @@ start(_StartType, _StartArgs) ->
        {"/link/[...]", link, []},
        {"/auth/countries", countries, []},
        {"/auth/login", login, []},
+       {"/auth/register", register, []},
        {"/auth/[...]", cowboy_static, {priv_dir, cr, "orig/auth"}},
        {"/js/[...]", cowboy_static, {priv_dir, cr, "orig/js"}},
        {"/public/[...]", cowboy_static, {priv_dir, cr, "orig/public"}},

@@ -1,4 +1,4 @@
--module(login).
+-module(register).
 
 -include("cr.hrl").
 
@@ -7,6 +7,6 @@
 init(Req, _) ->
     Headers = cowboy_req:headers(Req),
     {ok, Data, Req2} = cowboy_req:read_body(Req),
-    {ok, Json, _} = http_service:post(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, Headers),
+    {ok, Json, _} = http_service:post(<<"https://my.", ?TARGET/binary, "/auth/register">>, Data, Headers),
     Resp = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Json, Req2),
     {ok, Resp, []}.
