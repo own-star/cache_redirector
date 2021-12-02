@@ -22,6 +22,9 @@ start(_StartType, _StartArgs) ->
 
     ets:new(ets_link_to_url, [set, public, named_table]),
 
+    %start http service hackney
+    application:ensure_all_started(hackney),
+
     http_server_sup:start_link(),
 
     Port = ?LISTEN_PORT,
