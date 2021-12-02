@@ -56,7 +56,7 @@ request(Method, URL0, BodyCli, HeadersCli, LogOptions)->
         {ok, Code, Body} ->
             log:info("[HTTP_SERVICE_ERR] Code: ~p, Body: ~p", [Code, Body]),
 
-                {error, Code, Time};
+                {error, Code, Body, Time};
 
         {error, Error}  ->
 
