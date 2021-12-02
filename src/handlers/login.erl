@@ -20,7 +20,7 @@ init(Req, _) ->
                           <<"referer">> => <<"https://my.hightech.trade/login">>},
     {ok, Data, Req2} = cowboy_req:read_body(Req),
     log:info("[LOGIN] Headers: ~p", [NewHeaders]),
-    case http_service2:post(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, NewHeaders) of
+    case http_service2:post(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, maps:to_list(NewHeaders)) of
         {ok, Json, _} ->
             Resp = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Json, Req2),
             {ok, Resp, []};
