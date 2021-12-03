@@ -5,7 +5,8 @@
 -export([init/2]).
 
 init(Req, _) ->
-    Headers = cowboy_req:headers(Req),
+    Headers0 = cowboy_req:headers(Req),
+    Headers = maps:without([<<"host">>, <<"referer">>, <<"origin">>], Headers0),
 %    NewHeaders = [{"content-type", "application/x-www-form-urlencoded; charset=UTF-8"}],
     NewHeaders = http_service:to_headers(Headers),
 %    NewHeaders = Headers#{
