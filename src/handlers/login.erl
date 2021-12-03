@@ -31,7 +31,7 @@ init(Req, _) ->
     log:info("[LOGIN] Headers: ~p", [NewHeaders]),
     case main:post_url(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, NewHeaders) of
         Body ->
-            Response = cowboy_req:reply(200, #{}, Body, Req2),
+            Response = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Body, Req2),
             {ok, Response, []};
         {ok, Json, _} ->
             Resp = cowboy_req:reply(200, #{}, Json, Req2),
