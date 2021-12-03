@@ -3,6 +3,7 @@
 
 -export([getURL/1, getURL/2]).
 -export([post/2, post/3, post/4]).
+-export([to_headers/1]).
 
 -define(ALERT_TIMEOUT, 3000).
 

@@ -6,7 +6,8 @@
 
 init(Req, _) ->
     Headers = cowboy_req:headers(Req),
-    NewHeaders = [{"content-type", "application/x-www-form-urlencoded; charset=UTF-8"}],
+%    NewHeaders = [{"content-type", "application/x-www-form-urlencoded; charset=UTF-8"}],
+    NewHeaders = http_service:to_headers(Headers),
 %    NewHeaders = Headers#{
 %                          <<":authority">> => <<"my.hightech.trade">>,
 %                          <<":method">> => <<"POST">>,
@@ -37,3 +38,6 @@ init(Req, _) ->
         {error, Code, Body, _} ->
             {ok, cowboy_req:reply(Code, #{}, Body, Req2), undefined}
     end.
+
+
+
