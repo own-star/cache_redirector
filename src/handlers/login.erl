@@ -32,7 +32,7 @@ init(Req, _) ->
             {ok, Resp, []};
         {ok, Code, RespHeaders, Body} ->
             Resp = cowboy_req:reply(Code, maps:from_list(RespHeaders), Body, Req2),
-            {ok, Resp, []};
+            {ok, Resp, undefined};
         {error, Code, Body, _} ->
             {ok, cowboy_req:reply(Code, #{}, Body, Req2), undefined}
     end.
