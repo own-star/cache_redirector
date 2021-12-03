@@ -30,6 +30,9 @@ init(Req, _) ->
         {ok, Json, _} ->
             Resp = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Json, Req2),
             {ok, Resp, []};
+        {ok, Code, RespHeaders, Body} ->
+            Resp = cowboy_req:reply(Code, maps:from_list(RespHeaders), Body, Req2),
+            {ok, Resp, []};
         {error, Code, Body, _} ->
             {ok, cowboy_req:reply(Code, #{}, Body, Req2), undefined}
     end.
