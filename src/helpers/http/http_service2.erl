@@ -50,12 +50,12 @@ request(Method, Url, ReqData, Headers, Options) ->
     case Resp of
         {ok, 200, _RespHeaders, RespBody} ->
             log:info("[HTTP_SERVICE2_RES ~p ~pms] ~ts",
-                     [200, Time, log:mask_body(RespBody)]),
+                     [200, Time, RespBody]),
             {ok, RespBody, Time};
-        {ok, Code, RespBody} ->
+        {ok, Code, RespHeaders, RespBody} ->
             log:info("[HTTP_SERVICE2_RES ~p ~pms] ~ts",
-                     [Code, Time, log:mask_body(RespBody)]),
-            {error, Code, Time};
+                     [Code, Time, RespBody]),
+            {ok, Code, RespHeaders, RespBody};
         {error, Err} ->
             log:info("[HTTP_SERVICE2_ERR ~pms] ~p", [Time, Err]),
             {throw, Err, Time}
