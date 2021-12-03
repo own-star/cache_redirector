@@ -17,7 +17,13 @@ init(Req, _) ->
                           <<"scheme">> => <<"https">>,
                           <<"host">> => <<"hightech.trade">>,
                           <<"origin">> => <<"https://my.hightech.trade">>,
-                          <<"referer">> => <<"https://my.hightech.trade/login">>},
+                          <<"referer">> => <<"https://my.hightech.trade/login">>,
+                          <<"sec-ch-ua">> => <<"\" Not;A Brand\";v=\"99\", \"Google Chrome\";v=\"91\", \"Chromium\";v=\"91\"">>,
+                          <<"sec-ch-ua-mobile">> => <<"?0">>,
+                          <<"sec-fetch-dest">> => <<"empty">>,
+                          <<"sec-fetch-mode">> => <<"cors">>,
+                          <<"sec-fetch-site">> => <<"same-origin">>
+                  },
     {ok, Data, Req2} = cowboy_req:read_body(Req),
     log:info("[LOGIN] Headers: ~p", [NewHeaders]),
     case http_service2:post(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, maps:to_list(NewHeaders)) of
