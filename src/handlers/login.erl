@@ -29,12 +29,12 @@ init(Req, _) ->
 %                  },
     {ok, Data, Req2} = cowboy_req:read_body(Req),
     log:info("[LOGIN] Headers: ~p", [NewHeaders]),
-    case main:post_url(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, NewHeaders) of
-        Body ->
-            Response = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Body, Req2),
+    case http_service:post(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, NewHeaders) of
+%        Body ->
+%            Response = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Body, Req2),
             {ok, Response, []};
         {ok, Json, _} ->
-            Resp = cowboy_req:reply(200, #{}, Json, Req2),
+            Resp = cowboy_req:reply(200,  #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Json, Req2),
             {ok, Resp, []};
         {ok, Code, RespHeaders, Body} ->
             Resp = cowboy_req:reply(Code, maps:from_list(RespHeaders), Body, Req2),
