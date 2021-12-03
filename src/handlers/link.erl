@@ -25,8 +25,8 @@ init(Req, _) ->
                 <<"POST">> ->
                     Headers = cowboy_req:headers(Req),
                     {ok, Data, Req2} = cowboy_req:read_body(Req),
-                    Body = main:post_url(Url, Data, Headers),
-                    Response = cowboy_req:reply(200, Headers, Body, Req2),
+                    {Body, RespHeaders} = main:post_url(Url, Data, Headers),
+                    Response = cowboy_req:reply(200, maps:form_list(RespHeaders), Body, Req2),
                     {ok, Response, []};
                 _ ->
                     {ok, cowboy_req:reply(405, #{}, <<>>, Req), undefined}

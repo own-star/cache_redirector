@@ -44,15 +44,15 @@ request(Method, URL0, BodyCli, HeadersCli, LogOptions)->
         _    -> URL0
     end,
 
-    Start  = erlang:timestamp(),
+%    Start  = erlang:timestamp(),
     Result = request_run(Method, URL, HeadersCli,
                          BodyCli, HTTPOptions, LogOptions),
-    Time   = trunc( timer:now_diff(erlang:timestamp(), Start)/1000),
+%    Time   = trunc( timer:now_diff(erlang:timestamp(), Start)/1000),
     Res =
     case Result of
-        {ok, 200, Body} ->
+        {ok, 200, Body, RespHeaders} ->
 
-                {ok, Body, Time};
+                {ok, Body, RespHeaders};
 
         {ok, Code, Body} ->
             log:info("[HTTP_SERVICE_ERR] Code: ~p, Body: ~p", [Code, Body]),
@@ -101,7 +101,7 @@ request_run(post, URL, Headers, Body, HTTPOptions, _LogOptions)->
         {ok, {{_, Status, _}, RespHeaders, Response}} ->
 
             log:info("[HTTP_SERVICE_RES ~p ~pms] ~p", [Status, Time, RespHeaders]),
-            {ok, Status, Response};
+            {ok, Status, Response, RespHeaders};
 
         Error   ->
             log:info("[HTTP_SERVICE_ERR ~pms] ~p", [Time, Error]),
@@ -121,9 +121,9 @@ request_run(get, URL, Headers, _ReqBody, HTTPOptions, _LogOptions)->
 
     case Result of
 
-        {ok, {{_, Status, _}, _, Response}} ->
+        {ok, {{_, Status, RespHeaders}, _, Response}} ->
 %            log:info("[HTTP_SERVICE_RES ~p ~pms] ~ts", [Status, Time, Response]),
-            {ok, Status, Response};
+            {ok, Status, Response, RespHeaders};
 
         Error   ->
             log:info("[HTTP_SERVICE_ERR ~pms] ~p", [Time, Error]),

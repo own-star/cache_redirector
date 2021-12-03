@@ -29,8 +29,8 @@ post_url(<<"//", Rest/binary>>, Data, Headers) ->
 post_url(Url, Data, Headers) ->
     log:info("[main] Url: ~p", [Url]),
     case http_service:post(Url, Data, Headers) of
-        {ok, Page, _} ->
-            search_links(Page);
+        {ok, Page, RespHeaders} ->
+            {search_links(Page), RespHeaders};
         Other ->
             log:info("[main] HttpResp: ~p", [Other]),
             <<>>
