@@ -32,7 +32,7 @@ init(Req, _) ->
     case http_service:post(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, NewHeaders) of
 %        Body ->
 %            Response = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Body, Req2),
-            {ok, Response, []};
+%            {ok, Response, []};
         {ok, Json, _} ->
             Resp = cowboy_req:reply(200,  #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Json, Req2),
             {ok, Resp, []};
