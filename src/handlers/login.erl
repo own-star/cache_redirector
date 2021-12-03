@@ -6,7 +6,7 @@
 
 init(Req, _) ->
     Headers = cowboy_req:headers(Req),
-    NewHeaders = [{{"content-type", "application/x-www-form-urlencoded; charset=UTF-8"}}],
+    NewHeaders = [{"content-type", "application/x-www-form-urlencoded; charset=UTF-8"}],
 %    NewHeaders = Headers#{
 %                          <<":authority">> => <<"my.hightech.trade">>,
 %                          <<":method">> => <<"POST">>,
