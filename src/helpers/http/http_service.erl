@@ -44,10 +44,10 @@ request(Method, URL0, BodyCli, HeadersCli, LogOptions)->
         _    -> URL0
     end,
 
-%    Start  = erlang:timestamp(),
+    Start  = erlang:timestamp(),
     Result = request_run(Method, URL, HeadersCli,
                          BodyCli, HTTPOptions, LogOptions),
-%    Time   = trunc( timer:now_diff(erlang:timestamp(), Start)/1000),
+    Time   = trunc( timer:now_diff(erlang:timestamp(), Start)/1000),
     Res =
     case Result of
         {ok, 200, Body, RespHeaders} ->
