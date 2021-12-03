@@ -98,9 +98,9 @@ request_run(post, URL, Headers, Body, HTTPOptions, _LogOptions)->
 
     case Result of
 
-        {ok, {{_, Status, _}, _, Response}} ->
+        {ok, {{_, Status, _}, RespHeaders, Response}} ->
 
-%            log:info("[HTTP_SERVICE_RES ~p ~pms] ~ts", [Status, Time, Response]),
+            log:info("[HTTP_SERVICE_RES ~p ~pms] ~p", [Status, Time, RespHeaders]),
             {ok, Status, Response};
 
         Error   ->
