@@ -1,4 +1,4 @@
--module(login).
+-module(regpartner).
 
 -include("cr.hrl").
 
