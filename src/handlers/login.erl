@@ -6,6 +6,13 @@
 
 init(Req, State) ->
     log:info("[LOGIN] {init} State: ~p", [State]),
+    Path =
+    case State of
+        [] ->
+            <<>>;
+        [Val] ->
+            <<"/", Val/binary>>
+    end,
     Headers0 = cowboy_req:headers(Req),
     Headers = maps:without([<<"host">>, <<"referer">>, <<"origin">>], Headers0),
 %    NewHeaders = [{"content-type", "application/x-www-form-urlencoded; charset=UTF-8"}],
@@ -30,7 +37,7 @@ init(Req, State) ->
 %                  },
     {ok, Data, Req2} = cowboy_req:read_body(Req),
     log:info("[LOGIN] Headers: ~p", [NewHeaders]),
-    case http_service:post(<<"https://my.", ?TARGET/binary, "/auth/login">>, Data, NewHeaders) of
+    case http_service:post(<<"https://my.", ?TARGET/binary, Path/binary,  "/login">>, Data, NewHeaders) of
 %        Body ->
 %            Response = cowboy_req:reply(200, #{<<"content-type">> => <<"application/json; charset=utf-8">>}, Body, Req2),
 %            {ok, Response, []};
