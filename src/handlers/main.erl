@@ -49,7 +49,7 @@ search_links(<<"\"https://my.", ?TARGET_LIST, Rest/binary>>, Acc) ->
     FullLink = <<"https://my.", ?TARGET/binary, Link/binary>>,
     Key = get_key(FullLink),
     log:info("[SearchLink] Key: ~p, My Url: ~p", [Key, FullLink]),
-    search_links(NewRest, <<Acc/binary, "\"http://", ?MY_HOST/binary, "/link/", Key/binary, "\"">>);
+    search_links(NewRest, <<Acc/binary, "\"http://my.", ?MY_HOST/binary, "/link/", Key/binary, "\"">>);
 
 search_links(<<"'https://", ?TARGET_LIST, "/wp-content/plugins/colibri-page-builder/extend-builder/assets/static/css/theme.css", Rest/binary>>, Acc) ->
     {Qs, NewRest} = get_link(Rest),
