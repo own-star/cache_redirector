@@ -27,7 +27,7 @@ start(_StartType, _StartArgs) ->
 
     http_server_sup:start_link(),
 
-    Port = ?LISTEN_PORT,
+    {ok, Port} = application:get_env(?APP_NAME, port),
 
     Dispatch = cowboy_router:compile([{'_', [
        {"/link/[...]", link, []},
