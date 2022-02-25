@@ -1,8 +1,9 @@
 -module(data).
 
 -export([
+         getr/2, get/2, get/3,
          to_binary/1,
-         getr/2, get/2, get/3
+	 to_map/1
         ]).
 
 getr(Key, ListOrMap)->
@@ -44,3 +45,8 @@ to_binary(Val) when is_atom(Val) ->
     list_to_binary(atom_to_list(Val));
 to_binary(Term) ->
     term_to_binary(Term).
+
+to_map(List) when is_list(List) ->
+    maps:from_list(List);
+to_map(Map) ->
+    Map.

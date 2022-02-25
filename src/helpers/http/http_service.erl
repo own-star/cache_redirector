@@ -2,6 +2,7 @@
 
 
 -export([getURL/1, getURL/2]).
+-export([get/2, get/3, get/4]).
 -export([post/2, post/3, post/4]).
 -export([to_headers/1]).
 
@@ -17,6 +18,13 @@ getURL(URL, Headers)->
 getURL(URL, Headers, LogOptions)->
     request(get, URL, <<>>, Headers, LogOptions).
 
+
+get(URL, Data)->
+    http_service:get(URL, Data, []).
+get(URL, Data, Headers)->
+    http_service:get(URL, Data, Headers, #{}).
+get(URL, Data, Headers, LogOptions)->
+    request(get, URL, Data, Headers, LogOptions).
 
 post(URL, Data)->
     post(URL, Data, []).
@@ -88,7 +96,7 @@ request_run(post, URL, Headers, Body, HTTPOptions, _LogOptions)->
     end,
 
     ReqBody = to_binary(ReqBody0),
-    log:info("[HTTP_SERVICE_REQ {post} ~ts] ~ts", [to_binary(URL), ReqBody]),
+    log:info("[HTTP_SERVICE_REQ {post} ~ts] ~ts ~ts", [to_binary(URL), ReqBody, ContentType]),
     HttpProfile = http_server:get_profile(),
     Start  = erlang:system_time(milli_seconds),
     Result = httpc:request(post, {to_list(URL), to_headers(Headers),
@@ -121,7 +129,7 @@ request_run(get, URL, Headers, _ReqBody, HTTPOptions, _LogOptions)->
 
     case Result of
 
-        {ok, {{_, Status, RespHeaders}, _, Response}} ->
+        {ok, {{_, Status, _},  RespHeaders,  Response}} ->
 %            log:info("[HTTP_SERVICE_RES ~p ~pms] ~ts", [Status, Time, Response]),
             {ok, Status, Response, RespHeaders};
 

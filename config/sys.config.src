@@ -1,1 +1,28 @@
-[].
+[
+    {kernel, [
+        {inet_dist_listen_min, 32003},
+        {inet_dist_listen_max, 32009},
+	{logger_level, info},
+        {logger,[
+            {handler, default, logger_std_h, #{level => info, % change to notice to disable OTP progress reports.
+                formatter => {logger_formatter, 
+                            #{single_line => true,
+                              	time_offset => "Z",
+				max_size => 8192,
+				chars_limit => 8192,
+				depth => 200,
+				time_designator => 32,
+                               template => [time, " [", level, "] ", pid, "@", mfa, ":", line, "\n    ", msg,"\n"]
+                            }
+                          }
+            }}
+        ]}        
+    ]},
+
+    {cr, [
+	{port, 8002},
+	{target, <<"target.site">>},
+	{target_schema, <<"https://">>},
+	{my_host, <<"my.site">>}
+    ]}
+].

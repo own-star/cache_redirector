@@ -27,27 +27,17 @@ start(_StartType, _StartArgs) ->
 
     http_server_sup:start_link(),
 
-    {ok, Port} = application:get_env(?APP_NAME, port),
+    Port =
+    case  application:get_env(?APP_NAME, port) of
+        {ok, Port1}  ->
+    	    log:info("[START] Port1: ~p", [Port1]),
+	    Port1;
+	_ ->
+	    ?LISTEN_PORT
+    end,
 
     Dispatch = cowboy_router:compile([{'_', [
        {"/link/[...]", link, []},
-       {"/countries", countries, []},
-       {"/login", login, []},
-       {"/register", register, []},
-       {"/regPartner", regpartner, []},
-       {"/auth/countries", countries, []},
-       {"/auth/login", login, [<<"auth">>]},
-       {"/auth/register", register, []},
-       {"/auth/regPartner", regpartner, []},
-       {"/auth/[...]", cowboy_static, {priv_dir, cr, "orig/auth"}},
-       {"/js/[...]", cowboy_static, {priv_dir, cr, "orig/js"}},
-       {"/public/[...]", cowboy_static, {priv_dir, cr, "orig/public"}},
-       {"/stylesheets/[...]", cowboy_static, {priv_dir, cr, "orig/stylesheets"}},
-       {"/wp-admin/[...]", cowboy_static, {priv_dir, cr, "orig/wp-admi"}},
-       {"/wp-content/[...]", cowboy_static, {priv_dir, cr, "orig/wp-content"}},
-       {"/wp-include/[...]", cowboy_static, {priv_dir, cr, "orig/wp-include"}},
-       {"/wp-json/[...]", cowboy_static, {priv_dir, cr, "orig/wp-json"}},
-       {"/captcha.png", captcha, []},
        {"/[...]", main, []}
     ]}]),
     TransOpts = #{

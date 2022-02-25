@@ -1,5 +1,5 @@
--sname cr
--setcookie cr
+-sname my_hightrade_xzy
+-setcookie my_hightrade_xzy
 -heart
 +pc unicode
 -compile([{parse_transform, lager_transform}]).
