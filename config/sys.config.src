@@ -2,7 +2,7 @@
     {kernel, [
         {inet_dist_listen_min, 32003},
         {inet_dist_listen_max, 32009},
-	{logger_level, info},
+    	{logger_level, info},
         {logger,[
             {handler, default, logger_std_h, #{level => info, % change to notice to disable OTP progress reports.
                 formatter => {logger_formatter, 
@@ -20,9 +20,11 @@
     ]},
 
     {cr, [
-	{port, 8002},
-	{target, <<"target.site">>},
-	{target_schema, <<"https://">>},
-	{my_host, <<"my.site">>}
+        	{port, 8002},
+    	    {target, <<"target.site">>},
+    	    {target_schema, <<"https://">>},
+        	{my_host, <<"my.site">>},
+            {no_cache, []},
+            {no_proxy, []}
     ]}
 ].
