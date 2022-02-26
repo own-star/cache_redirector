@@ -63,7 +63,7 @@ search_links(Rest, Protocol, <<>>, TargetBin, MyHost, NoProxy, _TargetAcc, Acc) 
 search_links(<<X, Rest/binary>>, Protocol, Target, TargetBin, MyHost, NoProxy, <<>>, Acc) ->
     search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, <<>>, <<Acc/binary, X>>);
 search_links(<<X, Rest/binary>>, Protocol, Target, TargetBin, MyHost, NoProxy, TargetAcc, Acc) ->
-    search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, TargetAcc, <<Acc/binary, TargetAcc/binary, X>>);
+    search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, <<>>, <<Acc/binary, TargetAcc/binary, X>>);
 search_links(<<>>, _, _, _, _, _, _, Acc) ->
     Acc.
 
