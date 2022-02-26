@@ -62,8 +62,10 @@ search_links(<<>>, _, _, _, _, _, Acc) ->
     Acc.
 
 check_no_proxy(Rest, [NpItem|T]) ->
+    log:info("[main] check_no_proxy Testing: ~p", [NpItem]),
     case check_match(Rest, NpItem) of
         {true, NewRest} ->
+            log:info("[main] check_no_proxy Match: ~p", [NpItem]),
             {true, NpItem, NewRest};
         {_, _} ->
             check_no_proxy(Rest, T)
