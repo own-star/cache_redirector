@@ -1,5 +1,5 @@
--sname my_hightrade_xyz
--setcookie my_hightrade_xyz
+-sname meta_test
+-setcookie meta_test
 -heart
 +pc unicode
 -compile([{parse_transform, lager_transform}]).

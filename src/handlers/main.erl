@@ -5,6 +5,7 @@
 -export([init/2]).
 
 init(Req0, _) ->
+    log:info("[main] AppName: ~p", [?APP_NAME]),
     {ok, ReqData, Req} = cowboy_req:read_body(Req0),
     log:info("[main] ReqData: ~p", [ReqData]),
     Path = cowboy_req:path(Req),

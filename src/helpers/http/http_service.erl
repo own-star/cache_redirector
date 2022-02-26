@@ -43,7 +43,7 @@ request(Method, URL0, BodyCli, HeadersCli, LogOptions)->
     HTTPOptions = [{connect_timeout, 5000}, {timeout, 50000}, {ssl, [
                         {verify, verify_none},
                         %{server_name_indication, disable},
-                        {ciphers, ssl:cipher_suites(all)}
+                        {ciphers, ssl:cipher_suites(all, 'tlsv1.3')}
                     ]}],
 
     URL =
