@@ -3,6 +3,7 @@
 -include("cr.hrl").
 
 -export([init/2]).
+-export([search_links/6]).
 
 init(Req0, _) ->
     log:info("[main] AppName: ~p", [?APP_NAME]),
