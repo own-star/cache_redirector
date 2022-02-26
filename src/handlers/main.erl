@@ -42,23 +42,28 @@ init(Req0, _) ->
 
 search_links(<<31,139,8,0,0, _/binary>> = Page, Protocol, Target, TargetBin, MyHost, NoProxy) ->
 	log:info("[main] Page: ~ts", [zlib:gunzip(Page)]),
-    search_links(zlib:gunzip(Page), Protocol, Target, TargetBin, MyHost, NoProxy, <<>>);
+    search_links(zlib:gunzip(Page), Protocol, Target, TargetBin, MyHost, NoProxy, <<>>, <<>>);
 search_links(Page, Protocol, Target, TargetBin, MyHost, NoProxy) ->
-    search_links(Page, Protocol, Target, TargetBin, MyHost, NoProxy, <<>>).
+    search_links(Page, Protocol, Target, TargetBin, MyHost, NoProxy, <<>>, <<>>).
 
 
-search_links(<<Target, Rest/binary>>, Protocol, Target, TargetBin, MyHost, NoProxy, Acc) ->
+search_links(<<X, Rest/binary>>, Protocol, <<X, Target/binary>>, TargetBin, MyHost, NoProxy, TargetAcc, Acc) ->
+    log:info("[main] match X: ~p, Acc: ~p", [X, TargetAcc]),
+    search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, <<TargetAcc/binary, X>>, Acc);
+search_links(Rest, Protocol, <<>>, TargetBin, MyHost, NoProxy, _TargetAcc, Acc) ->
     log:info("[SearchLink] Url: ~p -> ~p ", [TargetBin, MyHost]),
     case check_no_proxy(Rest, NoProxy) of
         {true, NpItem, NewRest} ->
-            search_links(NewRest, Protocol, Target, TargetBin, MyHost, NoProxy, <<Acc/binary, TargetBin/binary, NpItem/binary>>);
+            search_links(NewRest, Protocol, TargetBin, TargetBin, MyHost, NoProxy, <<>>, <<Acc/binary, TargetBin/binary, NpItem/binary>>);
         _ ->
-            search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, <<Acc/binary, MyHost/binary>>)
+            search_links(Rest, Protocol, TargetBin, TargetBin, MyHost, NoProxy, <<>>, <<Acc/binary, MyHost/binary>>)
     end;
 
-search_links(<<X, Rest/binary>>, Protocol, Target, TargetBin, MyHost, NoProxy, Acc) ->
-    search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, <<Acc/binary, X>>);
-search_links(<<>>, _, _, _, _, _, Acc) ->
+search_links(<<X, Rest/binary>>, Protocol, Target, TargetBin, MyHost, NoProxy, <<>>, Acc) ->
+    search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, <<>>, <<Acc/binary, X>>);
+search_links(<<X, Rest/binary>>, Protocol, Target, TargetBin, MyHost, NoProxy, TargetAcc, Acc) ->
+    search_links(Rest, Protocol, Target, TargetBin, MyHost, NoProxy, TargetAcc, <<Acc/binary, TargetAcc/binary, X>>);
+search_links(<<>>, _, _, _, _, _, _, Acc) ->
     Acc.
 
 check_no_proxy(Rest, [NpItem|T]) ->
