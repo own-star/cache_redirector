@@ -3,7 +3,8 @@
 -export([
          getr/2, get/2, get/3,
          to_binary/1,
-	 to_map/1
+         to_map/1,
+         bin_reverse/1
         ]).
 
 getr(Key, ListOrMap)->
@@ -50,3 +51,11 @@ to_map(List) when is_list(List) ->
     maps:from_list(List);
 to_map(Map) ->
     Map.
+
+bin_reverse(Bin) ->
+    bin_reverse(Bin, <<>>).
+
+bin_reverse(<<X, Rest/binary>>, Acc) ->
+    bin_reverse(Rest, <<X, Acc/binary>>);
+bin_reverse(<<>>, Acc) ->
+    Acc.

@@ -18,7 +18,11 @@ init(Req0, _) ->
     Cookie = data:get(<<"cookie">>, Headers0),
     ContentType = data:get(<<"content-type">>, Headers0),
     UserAgent = data:get(<<"user-agent">>, Headers0),
-    log:debug("Req: ~p", [Req]),
+    Host = data:get(<<"host">>, Headers0),
+	{ok, MyHost} = application:get_env(?APP_NAME, my_host),
+    Sub = get_subdomen(data:bin_reverse(MyHost), data:bin_reverse(Host)),
+    log:info("[main] Host: ~p, Subdomen: ~p", [Host, Sub]),
+    log:info("Req: ~p", [Req]),
     Headers = http_service:to_headers(#{<<"cookie">> => Cookie,
                                         <<"content-type">> => ContentType,
                                         <<"user-agent">> => UserAgent
@@ -26,9 +30,8 @@ init(Req0, _) ->
     log:debug("[main] Headers: ~p", [Headers]),
     {ok, TargetSchema} = application:get_env(?APP_NAME, target_schema),
     {ok, TargetBin} = application:get_env(?APP_NAME, target),
-    case  http_service:Method(<<TargetSchema/binary, TargetBin/binary, Path/binary, "?", Qs/binary>>, ReqData, Headers) of 
+    case  http_service:Method(<<TargetSchema/binary, Sub/binary, TargetBin/binary, Path/binary, "?", Qs/binary>>, ReqData, Headers) of 
     	{ok, MainPage, RespHeaders} ->
-	    {ok, MyHost} = application:get_env(?APP_NAME, my_host),
 	    {ok, NoProxy} = application:get_env(?APP_NAME, no_proxy),
 	    NewPage = search_links(MainPage, TargetBin, MyHost, NoProxy),
     	    Resp = cowboy_req:reply(200, data:to_map(RespHeaders), NewPage, Req),
@@ -99,6 +102,11 @@ check_match(<<X, Rest/binary>>, <<X, ItemRest/binary>>, Acc) ->
     check_match(Rest, ItemRest, <<Acc/binary, X>>);
 check_match(Rest, _, Acc) ->
     {false, Rest, Acc}.
+
+get_subdomen(<<_, Rest/binary>>, <<_, Acc/binary>>) ->
+    get_subdomen(Rest, Acc);
+get_subdomen(<<>>, Acc) ->
+    data:bin_reverse(Acc).
 
 to_method(<<"POST">>) ->
 	post;
