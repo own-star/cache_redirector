@@ -24,6 +24,7 @@
     	    {target, <<"target.site">>},
     	    {target_schema, <<"https://">>},
         	{my_host, <<"my.site">>},
+            {use_subdomains, true},
             {no_cache, []},
             {no_proxy, []}
     ]}

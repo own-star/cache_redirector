@@ -20,9 +20,9 @@ init(Req0, _) ->
     UserAgent = data:get(<<"user-agent">>, Headers0),
     Host = data:get(<<"host">>, Headers0),
 	{ok, MyHost} = application:get_env(?APP_NAME, my_host),
-    Sub = get_subdomen(data:bin_reverse(MyHost), data:bin_reverse(Host)),
-    log:info("[main] Host: ~p, Subdomen: ~p", [Host, Sub]),
-    log:info("Req: ~p", [Req]),
+    Sub = get_subdomain(MyHost, Host),
+%    log:info("[main] Host: ~p, Subdomain: ~p", [Host, Sub]),
+    log:debug("Req: ~p", [Req]),
     Headers = http_service:to_headers(#{<<"cookie">> => Cookie,
                                         <<"content-type">> => ContentType,
                                         <<"user-agent">> => UserAgent
@@ -103,9 +103,15 @@ check_match(<<X, Rest/binary>>, <<X, ItemRest/binary>>, Acc) ->
 check_match(Rest, _, Acc) ->
     {false, Rest, Acc}.
 
-get_subdomen(<<_, Rest/binary>>, <<_, Acc/binary>>) ->
-    get_subdomen(Rest, Acc);
-get_subdomen(<<>>, Acc) ->
+get_subdomain(MyHost, Host) ->
+    {ok, UseSubdomains} = application:get_env(?APP_NAME, use_subdomains),
+    get_subdomain(data:bin_reverse(MyHost), data:bin_reverse(Host), UseSubdomains).
+
+get_subdomain(_, _, false) ->
+    <<>>;
+get_subdomain(<<_, Rest/binary>>, <<_, Acc/binary>>, UseSubdomains) ->
+    get_subdomain(Rest, Acc, UseSubdomains);
+get_subdomain(<<>>, Acc, _) ->
     data:bin_reverse(Acc).
 
 to_method(<<"POST">>) ->
